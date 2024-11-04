@@ -19,6 +19,10 @@ trip_template = """
 You are an expert in analyzing travel experiences.
 From the following text, determine:
 1. Whether the trip experience was "positive" or "negative".
+2. If it was "negative", specify if the dissatisfaction was caused by the "airline" (e.g., lost luggage, delayed flight) or by an "external issue" (e.g., weather delay).
+3. If negative is caused by airline, nform the customer that the customer service team will contact them soon to resolve the issue or provide compensation
+4. If negative caused by an external issue, politely explain that the airline is not liable in such cases, while showing appreciation for the customer's understanding.
+
 
 Text:
 {trip_experience}
