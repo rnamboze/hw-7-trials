@@ -14,7 +14,20 @@ my_secret_key = st.secrets['MyOpenAIKey']
 ### Create the LLM API object
 llm = OpenAI(openai_api_key=my_secret_key)
 
-### Define templates for different response types
+import streamlit as st
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain.llms import OpenAI
+from langchain_core.runnables import RunnableBranch
+import langchain
+
+# Load your API Key
+my_secret_key = st.secrets['MyOpenAIKey']
+
+# Create the LLM API object
+llm = OpenAI(openai_api_key=my_secret_key)
+
+# Define templates for different response types
 trip_template = """
 Analyze the following trip experience:
 1. Summarize the experience briefly.
@@ -47,10 +60,19 @@ positive_feedback_prompt = PromptTemplate.from_template(positive_feedback_templa
 
 # Define the branching logic
 branch = RunnableBranch(
-    # Route based on detected keywords in the response
-    (lambda x: "negative" in x["trip_summary"].lower() and "airline" in x["trip_summary"].lower(), airline_issue_prompt),
-    (lambda x: "negative" in x["trip_summary"].lower() and ("weather" in x["trip_summary"].lower() or "beyond control" in x["trip_summary"].lower()), external_issue_prompt),
-    positive_feedback_prompt
+    branches=[
+        # If the response indicates a negative experience caused by the airline
+        (
+            lambda x: "negative" in x["trip_summary"].lower() and "airline" in x["trip_summary"].lower(),
+            airline_issue_prompt
+        ),
+        # If the response indicates a negative experience beyond the airline's control
+        (
+            lambda x: "negative" in x["trip_summary"].lower() and ("weather" in x["trip_summary"].lower() or "beyond control" in x["trip_summary"].lower()),
+            external_issue_prompt
+        )
+    ],
+    default=positive_feedback_prompt  # Default to positive feedback if no conditions match
 )
 
 # Combine chains
