@@ -53,7 +53,7 @@ external_issue_prompt = PromptTemplate.from_template(
 
     Your response should follow these guidelines:
     1. Express sympathy for the inconvenience caused by external circumstances.
-    2. Politely explain that the airline is not liable in such cases and will not provide compensation.
+    2. Explain that the airline is not liable in such cases and will not provide compensation.
     3. Address the customer directly in a professional tone.
 
 Trip Experience: {trip_experience}
@@ -78,8 +78,8 @@ Trip Experience: {trip_experience}
 # Routing/Branching chain
 branch = RunnableBranch(
 
-    (lambda x: "negative" in x["trip_experience"].lower(), airline_issue_prompt),
-    (lambda x: "negative" in x["trip_experience"].lower(), external_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower() and "airline" in x["trip_experience"] or "lost luggage" in x["trip_experience"].lower(), airline_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower()and "weather" in x["trip_experience"], external_issue_prompt),
     positive_feedback_prompt
 )
 
