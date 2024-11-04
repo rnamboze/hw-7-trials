@@ -24,26 +24,55 @@ Analyze the following trip experience:
 Trip Experience: {trip_experience}
 """
 
-airline_issue_template = """
-You had a negative experience caused by the airline. Our customer service team will reach out soon to resolve the issue or provide compensation. We apologize for any inconvenience caused.
-"""
-
-external_issue_template = """
-We’re sorry to hear about your negative experience due to factors beyond the airline's control, such as weather-related delays. Unfortunately, the airline is not liable in such cases. We appreciate your understanding.
-"""
-
-positive_feedback_template = """
-Thank you for your positive feedback and for choosing to fly with us! We’re glad you had a good experience.
-"""
-
 # Create the main prompt chain for analyzing the trip experience
 trip_prompt = PromptTemplate(input_variables=["trip_experience"], template=trip_template)
 trip_chain = LLMChain(llm=llm, prompt=trip_prompt)
 
 # Define individual response templates for each scenario
-airline_issue_prompt = PromptTemplate.from_template(airline_issue_template) | llm
-external_issue_prompt = PromptTemplate.from_template(external_issue_template) | llm
-positive_feedback_prompt = PromptTemplate.from_template(positive_feedback_template) | llm
+airline_issue_prompt = PromptTemplate.from_template(
+    """You are a customer service representative for an airline.
+    The customer had a negative experience with the airline due to an issue caused by the airline (e.g., lost luggage).
+
+    Your response should follow these guidelines:
+    1. Express sympathy and acknowledge the inconvenience.
+    2. Inform the customer that the customer service team will contact them soon to resolve the issue or provide compensation.
+    3. Address the customer directly in a professional, empathetic tone.
+
+Trip Experience: {trip_experience}
+
+"""    
+) | llm
+
+
+
+external_issue_prompt = PromptTemplate.from_template(
+    """You are a customer service representative for an airline.
+    The customer had a negative experience due to external factors beyond the airline's control (e.g., weather-related delays).
+
+    Your response should follow these guidelines:
+    1. Express sympathy for the inconvenience caused by external circumstances.
+    2. Politely explain that the airline is not liable in such cases, while showing appreciation for the customer's understanding.
+    3. Address the customer directly in a professional, empathetic tone.
+
+Trip Experience: {trip_experience}
+
+"""
+) | llm
+
+
+positive_feedback_prompt = PromptTemplate.from_template(
+    """You are a customer service representative for an airline.
+    The customer had a positive experience, and you would like to acknowledge their feedback.
+
+    Your response should follow these guidelines:
+    1. Thank the customer for their feedback and for choosing to fly with the airline.
+    2. Convey appreciation and a professional, positive tone.
+    3. Address the customer directly.
+
+Trip Experience: {trip_experience}
+
+""" 
+) | llm
 
 # Define the branching logic
 branch = RunnableBranch(
