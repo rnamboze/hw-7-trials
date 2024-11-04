@@ -8,6 +8,9 @@ from langchain_core.runnables import RunnableBranch
 import langchain
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
+### Load your API Key
+my_secret_key = st.secrets['MyOpenAIKey']
+
 ### Create the LLM API object
 llm = OpenAI(openai_api_key="YOUR_OPENAI_API_KEY")
 
