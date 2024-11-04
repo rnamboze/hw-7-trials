@@ -91,7 +91,7 @@ branch = RunnableBranch(
 )
 
 # Combine chains
-full_chain = {"trip_experience": trip_experience_chain, lambda x: x["trip_experience"], "trip_summary": trip_chain} | branch
+full_chain = {"trip_experience": trip_experience_chain, "trip_experience": lambda x: x["trip_experience"]} | branch
 
 # Streamlit Interface
 st.title("Trip Experience Summarizer")
