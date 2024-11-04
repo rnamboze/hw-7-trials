@@ -14,8 +14,8 @@ my_secret_key = st.secrets['MyOpenAIKey']
 ### Create the LLM API object
 llm = OpenAI(openai_api_key=my_secret_key)
 
-# Define templates for different response types
-trip_template = """
+# Define the main analysis prompt
+trip_analysis_template = """
 Analyze the following trip experience:
 1. Summarize the experience briefly.
 2. Indicate if the experience was positive or negative.
@@ -23,47 +23,39 @@ Analyze the following trip experience:
 
 Trip Experience: {trip_experience}
 """
+trip_analysis_prompt = PromptTemplate(input_variables=["trip_experience"], template=trip_analysis_template)
+trip_analysis_chain = LLMChain(llm=llm, prompt=trip_analysis_prompt)
 
-airline_issue_template = """
-You had a negative experience caused by the airline. Our customer service team will reach out soon to resolve the issue or provide compensation. We apologize for any inconvenience caused.
-"""
+# Define response templates
+airline_issue_template = "We're sorry to hear about your negative experience caused by the airline. Our customer service team will reach out soon to resolve the issue or provide compensation. We apologize for any inconvenience caused."
+external_issue_template = "We’re sorry to hear about your negative experience due to factors beyond the airline's control, such as weather-related delays. Unfortunately, the airline is not liable in such cases. We appreciate your understanding."
+positive_feedback_template = "Thank you for your positive feedback and for choosing to fly with us! We’re glad you had a good experience."
 
-external_issue_template = """
-We’re sorry to hear about your negative experience due to factors beyond the airline's control, such as weather-related delays. Unfortunately, the airline is not liable in such cases. We appreciate your understanding.
-"""
+# Define response chains (no LLM needed since responses are fixed)
+def airline_issue_response(_):
+    return airline_issue_template
 
-positive_feedback_template = """
-Thank you for your positive feedback and for choosing to fly with us! We’re glad you had a good experience.
-"""
+def external_issue_response(_):
+    return external_issue_template
 
-# Create the main prompt chain for analyzing the trip experience
-trip_prompt = PromptTemplate(input_variables=["trip_experience"], template=trip_template)
-trip_chain = LLMChain(llm=llm, prompt=trip_prompt)
-
-# Define individual response templates for each scenario
-airline_issue_prompt = PromptTemplate.from_template(airline_issue_template) | llm
-external_issue_prompt = PromptTemplate.from_template(external_issue_template) | llm
-positive_feedback_prompt = PromptTemplate.from_template(positive_feedback_template) | llm
+def positive_feedback_response(_):
+    return positive_feedback_template
 
 # Define the branching logic
+def is_airline_issue(summary):
+    return "negative" in summary.lower() and ("airline" in summary.lower() or "lost luggage" in summary.lower())
+
+def is_external_issue(summary):
+    return "negative" in summary.lower() and ("weather" in summary.lower() or "beyond control" in summary.lower() or "delay" in summary.lower())
+
 branch = RunnableBranch(
-    branches=[
-        # If the response indicates a negative experience caused by the airline
-        (
-            lambda x: "negative" in x["trip_summary"].lower() and "airline" in x["trip_summary"].lower(),
-            airline_issue_prompt
-        ),
-        # If the response indicates a negative experience beyond the airline's control
-        (
-            lambda x: "negative" in x["trip_summary"].lower() and ("weather" in x["trip_summary"].lower() or "beyond control" in x["trip_summary"].lower()),
-            external_issue_prompt
-        )
-    ],
-    default=positive_feedback_prompt  # Default to positive feedback if no conditions match
+    (is_airline_issue, airline_issue_response),
+    (is_external_issue, external_issue_response),
+    positive_feedback_response  # Default response
 )
 
-# Combine chains
-full_chain = {"trip_summary": trip_chain, "trip_experience": lambda x: x["trip_experience"]} | branch
+# Combine the chains
+full_chain = trip_analysis_chain | branch
 
 # Streamlit Interface
 st.title("Trip Experience Summarizer")
@@ -74,5 +66,11 @@ trip_experience = st.text_area("Please describe your trip:")
 
 if trip_experience:
     # Run the full chain to get a categorized response
-    result = full_chain.invoke({"trip_experience": trip_experience})
-    st.write(result)
+    analysis_result = trip_analysis_chain.run(trip_experience=trip_experience)
+    response = branch.invoke(analysis_result)
+    
+    # Display the summary and the response
+    st.subheader("Summary of Your Trip Experience:")
+    st.write(analysis_result)
+    st.subheader("Our Response:")
+    st.write(response)
