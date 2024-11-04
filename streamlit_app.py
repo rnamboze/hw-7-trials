@@ -28,13 +28,7 @@ st.header("Share with us your experience of the latest trip.")
 trip_experience = st.text_area("Please describe your trip:")
 
 # Button to process input
-if st.button("Submit"):
-    if trip_experience:
-        # Run the input through the LangChain
-        summary = chain.run(trip_experience=trip_experience)
-        
-        # Display the result
-        st.subheader("Summary of Your Trip Experience:")
-        st.write(summary)
-    else:
-        st.warning("Please describe your trip before submitting!")
+if trip_experience:
+        response = chain.run(trip_experience)
+        st.write(response)
+   
