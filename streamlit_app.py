@@ -38,7 +38,7 @@ airline_issue_prompt = PromptTemplate.from_template(
 
     Your response should follow these guidelines:
     1. Express sympathy and acknowledge the inconvenience.
-    2. Inform the customer that the customer service team will contact them soon to resolve the issue or provide compensation.
+    2. Inform the customer that the customer service team will contact them soon to provide compensation.
     3. Address the customer directly in a professional tone.
 
 Trip Experience: {trip_experience}
@@ -52,7 +52,7 @@ external_issue_prompt = PromptTemplate.from_template(
 
     Your response should follow these guidelines:
     1. Express sympathy for the inconvenience caused by external circumstances.
-    2. Politely explain that the airline is not liable in such cases, while showing appreciation for the customer's understanding.
+    2. Politely explain that the airline is not liable in such cases, and also show appreciation for the customer's understanding.
     3. Address the customer directly in a professional tone.
 
 Trip Experience: {trip_experience}
