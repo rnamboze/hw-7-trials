@@ -21,10 +21,6 @@ From the following text, determine:
 1. Whether the trip experience was "positive" or "negative".
 2. If it was "negative", specify if the dissatisfaction was caused by the "airline" (e.g., lost luggage, delayed flight) or by an "external issue" (e.g., weather delay).
 
-Respond in the format:
-- "positive"
-- "negative - airline" or "negative - external issue"
-
 Text:
 {trip_experience}
 """
@@ -51,8 +47,6 @@ Trip Experience: {trip_experience}
 """    
 ) | llm
 
-
-
 external_issue_prompt = PromptTemplate.from_template(
     """You are a customer service representative for an airline.
     The customer had a negative experience due to external factors beyond the airline's control (e.g., weather-related delays).
@@ -78,7 +72,6 @@ positive_feedback_prompt = PromptTemplate.from_template(
     3. Address the customer directly.
 
 Trip Experience: {trip_experience}
-
 """ 
 ) | llm
 
@@ -93,8 +86,8 @@ branch = RunnableBranch(
 # Combine chains
 full_chain = {"trip_experience": trip_experience_chain, "trip_experience": lambda x: x["trip_experience"]} | branch
 
-# Streamlit Interface
-st.title("Trip Experience Summarizer")
+# Display Side
+st.title("Flight Experience Feedback Form")
 st.header("Share with us your experience of the latest trip.")
 
 # Textbox for user input
