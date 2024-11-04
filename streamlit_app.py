@@ -53,7 +53,7 @@ external_issue_prompt = PromptTemplate.from_template(
 
     Your response should follow these guidelines:
     1. Express sympathy for the inconvenience caused by external circumstances.
-    2. Politely explain that the airline is not liable in such cases.
+    2. Politely explain that the airline is not liable in such cases and will not provide compensation.
     3. Address the customer directly in a professional tone.
 
 Trip Experience: {trip_experience}
