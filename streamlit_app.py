@@ -74,15 +74,15 @@ Trip Experience: {trip_experience}
 """ 
 ) | llm
 
-# Define the branching logic
+# Routing/Branching chain
 branch = RunnableBranch(
 
-    (lambda x: "negative" in x["trip_experience"].lower(), airline_issue_prompt),
-    (lambda x: "negative" in x["trip_experience"].lower(), external_issue_prompt),
+    (lambda x: "airline" in x["trip_experience"].lower(), airline_issue_prompt),
+    (lambda x: "luggage" in x["trip_experience"].lower(), external_issue_prompt),
     positive_feedback_prompt
 )
 
-# Combine chains
+# Put all the chains together
 full_chain = {"trip_experience": trip_experience_chain, "trip_experience": lambda x: x["request"]} | branch
 
 # Display Side
