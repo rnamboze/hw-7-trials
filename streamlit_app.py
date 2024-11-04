@@ -1,4 +1,4 @@
-aimport streamlit as st
+import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.llms import OpenAI
