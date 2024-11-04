@@ -14,19 +14,6 @@ my_secret_key = st.secrets['MyOpenAIKey']
 ### Create the LLM API object
 llm = OpenAI(openai_api_key=my_secret_key)
 
-import streamlit as st
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.llms import OpenAI
-from langchain_core.runnables import RunnableBranch
-import langchain
-
-# Load your API Key
-my_secret_key = st.secrets['MyOpenAIKey']
-
-# Create the LLM API object
-llm = OpenAI(openai_api_key=my_secret_key)
-
 # Define templates for different response types
 trip_template = """
 Analyze the following trip experience:
