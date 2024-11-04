@@ -25,7 +25,7 @@ st.title("Trip Experience Summarizer")
 st.header("Share with us your experience of the latest trip.")
 
 # Textbox for user input
-trip_experience = st.text_area("Describe your trip:")
+trip_experience = st.text_area("Please describe your trip:")
 
 # Button to process input
 if st.button("Submit"):
