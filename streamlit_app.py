@@ -16,19 +16,27 @@ llm = OpenAI(openai_api_key=my_secret_key)
 
 # Define templates for different response types
 trip_template = """
-Analyze the following trip experience:
-1. Summarize the experience briefly.
-2. Indicate if the experience was positive or negative.
-3. If negative, specify if the dissatisfaction was due to the airline (e.g., lost luggage) or beyond the airline’s control (e.g., weather delay).
+You are an expert in analyzing travel experiences.
+From the following text, determine:
+1. Whether the trip experience was "positive" or "negative".
+2. If it was "negative", specify if the dissatisfaction was caused by the "airline" (e.g., lost luggage, delayed flight) or by an "external issue" (e.g., weather delay).
 
-Trip Experience: {trip_experience}
+Respond in the format:
+- "positive"
+- "negative - airline" or "negative - external issue"
+
+Text:
+{trip_experience}
 """
 
-# Create the main prompt chain for analyzing the trip experience
-trip_prompt = PromptTemplate(input_variables=["trip_experience"], template=trip_template)
-trip_chain = LLMChain(llm=llm, prompt=trip_prompt)
+# Create the decision-making chain
+trip_experience_chain = (
+    PromptTemplate.from_template(trip_template)
+    | llm
+    | StrOutputParser()
+)
 
-# Define individual response templates for each scenario
+# individual response templates for each scenario
 airline_issue_prompt = PromptTemplate.from_template(
     """You are a customer service representative for an airline.
     The customer had a negative experience with the airline due to an issue caused by the airline (e.g., lost luggage).
