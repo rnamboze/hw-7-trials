@@ -32,5 +32,11 @@ if trip_experience:
         st.write(response)
 
         if "negative" in response.lower() and ("airline" in response.lower() or "luggage" in response.lower() or "delay" in response.lower()):
-          st.warning("We're sorry to hear about your negative experience. Our customer service team will contact you soon to resolve the issue or provide compensation.")
+          st.SystemMessage(
+                "We're so sorry to hear about your negative experience. "
+                "It sounds like the airline might be responsible for the inconvenience. "
+                "Don't worry, our customer service team will be contacting you shortly "
+                "to resolve the issue or provide compensation."
+            )
+        )
 
