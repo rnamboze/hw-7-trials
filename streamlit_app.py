@@ -83,7 +83,7 @@ branch = RunnableBranch(
 )
 
 # Combine chains
-full_chain = {"trip_experience": trip_experience_chain, "trip_experience": lambda x: x["trip_experience"]} | branch
+full_chain = {"trip_experience": trip_experience_chain, "text": lambda x: x["request"]} | branch
 
 # Display Side
 st.title("Flight Experience Feedback Form")
