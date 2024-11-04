@@ -15,11 +15,12 @@ my_secret_key = st.secrets['MyOpenAIKey']
 llm = OpenAI(openai_api_key=my_secret_key)
 
 # Define the LangChain Prompt and Chain
+trip_template = """Summarize the following trip experience briefly:{trip_experience}"""
 prompt_template = PromptTemplate(input_variables=["trip_experience"], 
-                                 template="Summarize the following trip experience briefly:\n\n{trip_experience}")
+                                 template=trip_template)
 chain = LLMChain(llm=llm, prompt=prompt_template)
 
-# Streamlit App
+# Title of App
 st.title("Trip Experience Summarizer")
 st.header("Share with us your experience of the latest trip.")
 
