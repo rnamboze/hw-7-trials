@@ -85,13 +85,13 @@ Trip Experience: {trip_experience}
 # Define the branching logic
 branch = RunnableBranch(
     # Route based on detected keywords in the response
-    (lambda x: "negative" in x.lower() and "airline" in x.lower(), airline_issue_prompt),
-    (lambda x: "negative" in x.lower() and ("weather" in x.lower() or "beyond control" in x.lower()), external_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower() and "airline" in x.lower(), airline_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower() and ("weather" in x.lower() or "beyond control" in x["trip_experience"].lower()), external_issue_prompt),
     positive_feedback_prompt
 )
 
 # Combine chains
-full_chain = {"trip_experience": lambda x: x["trip_experience"], "trip_summary": trip_chain} | branch
+full_chain = {"trip_experience": trip_experience_chain, lambda x: x["trip_experience"], "trip_summary": trip_chain} | branch
 
 # Streamlit Interface
 st.title("Trip Experience Summarizer")
