@@ -1,7 +1,6 @@
 import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from langchain.chains import SimpleSequentialChain
 from langchain.llms import OpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableBranch
@@ -20,7 +19,10 @@ You are an expert in analyzing travel experiences.
 From the following text, determine:
 1. Whether the trip experience was "positive" or "negative".
 2. If it was "negative", specify if the dissatisfaction was caused by the "airline" (e.g., lost luggage, delayed flight) or by an "external issue" (e.g., weather delay).
-3. Keep responses professional, brief and to the point.
+
+Respond in the format:
+- "positive"
+- "negative - airline" or "negative - external issue"
 
 Text:
 {trip_experience}
@@ -78,9 +80,9 @@ Trip Experience: {trip_experience}
 
 # Define the branching logic
 branch = RunnableBranch(
-    # Route based on detected keywords in the response
-    (lambda x: "negative" in x["trip_experience"].lower() and "airline" in x.lower(), airline_issue_prompt),
-    (lambda x: "negative" in x["trip_experience"].lower() and ("weather" in x.lower() or "beyond control" in x["trip_experience"].lower()), external_issue_prompt),
+
+    (lambda x: "negative- airline" in x["trip_experience"].lower() and "airline" in x.lower(), airline_issue_prompt),
+    (lambda x: "negative- external issue" in x["trip_experience"].lower() and ("weather" in x.lower() or "beyond control" in x["trip_experience"].lower()), external_issue_prompt),
     positive_feedback_prompt
 )
 
