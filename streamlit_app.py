@@ -19,6 +19,7 @@ You are an expert in analyzing travel experiences.
 From the following text, determine:
 1. Whether the trip experience was "positive" or "negative".
 2. If it was "negative", determine if it was caused by the "airline" (e.g., lost luggage, delayed flight) or by an "external issue" (e.g., weather delay).
+3. Provide the appropriate response if it was caused by the "airline" or by an "external issue"
 
 Text:
 {trip_experience}
