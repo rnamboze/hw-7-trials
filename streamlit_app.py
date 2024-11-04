@@ -12,7 +12,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 my_secret_key = st.secrets['MyOpenAIKey']
 
 ### Create the LLM API object
-llm = OpenAI(openai_api_key=my_secret_key)
+llm = ChatOpenAI(openai_api_key=my_secret_key, model="gpt-4")
 
 # Define templates for different response types
 trip_template = """
