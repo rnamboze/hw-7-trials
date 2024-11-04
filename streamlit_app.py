@@ -77,8 +77,8 @@ Trip Experience: {trip_experience}
 # Define the branching logic
 branch = RunnableBranch(
 
-    (lambda x: "negative" in x["trip_experience"].lower() and "airline" in x["trip_experience"].lower(), airline_issue_prompt),
-    (lambda x: "negative" in x["trip_experience"].lower() and ("weather" in x.lower() or "unforeseen" in x["trip_experience"].lower()), external_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower(), airline_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower(), external_issue_prompt),
     positive_feedback_prompt
 )
 
