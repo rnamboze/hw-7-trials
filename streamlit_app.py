@@ -20,10 +20,6 @@ From the following text, determine:
 1. Whether the trip experience was "positive" or "negative".
 2. If it was "negative", specify if the dissatisfaction was caused by the "airline" (e.g., lost luggage, delayed flight) or by an "external issue" (e.g., weather delay).
 
-Respond in the format:
-- "positive"
-- "negative - airline" or "negative - external issue"
-
 Text:
 {trip_experience}
 """
@@ -81,8 +77,8 @@ Trip Experience: {trip_experience}
 # Define the branching logic
 branch = RunnableBranch(
 
-    (lambda x: "negative- airline" in x["trip_experience"].lower() and "airline" in x.lower(), airline_issue_prompt),
-    (lambda x: "negative- external issue" in x["trip_experience"].lower() and ("weather" in x.lower() or "beyond control" in x["trip_experience"].lower()), external_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower() and "airline" in x.lower(), airline_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower() and ("weather" in x.lower() or "beyond control" in x["trip_experience"].lower()), external_issue_prompt),
     positive_feedback_prompt
 )
 
