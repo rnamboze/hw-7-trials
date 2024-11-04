@@ -75,8 +75,8 @@ Trip Experience: {trip_experience}
 # Routing/Branching chain
 branch = RunnableBranch(
 
-    (lambda x: "negative" in x["trip_experience"].lower(), airline_issue_prompt),
-    (lambda x: "negative" in x["trip_experience"].lower(), external_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower(), "airline" in x["trip_experience"].lower(), "lost luggage" in x["trip_experience"].lower(), airline_issue_prompt),
+    (lambda x: "negative" in x["trip_experience"].lower(), "weather" in x["trip_experience"].lower(), external_issue_prompt),
     positive_feedback_prompt
 )
 
