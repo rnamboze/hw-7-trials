@@ -1,4 +1,16 @@
 import streamlit as st
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain.chains import SimpleSequentialChain
+from langchain.llms import OpenAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableBranch
+import langchain
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+
+### Create the LLM API object
+llm = OpenAI(openai_api_key="YOUR_OPENAI_API_KEY")
+
 
 st.title("🎈 My new app")
 st.write(
